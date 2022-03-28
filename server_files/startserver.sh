@@ -14,18 +14,14 @@ if [ -f $STARTER_JAR ]; then
     echo "Skipping download. Using existing $STARTER_JAR"
 else
     echo $URL
-    which wget >> /dev/null
-    if [ $? -eq 0 ]; then
+    if which wget >/dev/null 2>&1; then
         echo "DEBUG: (wget) Downloading ${URL}"
         wget -O $STARTER_JAR "${URL}"
+    elif which curl >/dev/null 2>&1; then
+        echo "DEBUG: (curl) Downloading ${URL}"
+        curl -L -o $STARTER_JAR "${URL}"
     else
-        which curl >> /dev/null
-        if [ $? -eq 0 ]; then
-            echo "DEBUG: (curl) Downloading ${URL}"
-            curl -L -o $STARTER_JAR "${URL}"
-        else
-            echo "Neither wget or curl were found on your system. Please install one and try again"
-        fi
+        echo "Neither wget or curl were found on your system. Please install one and try again"
     fi
 fi
 
