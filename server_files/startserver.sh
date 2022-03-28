@@ -1,5 +1,5 @@
 DO_RAMDISK=0
-if [[ $(cat server-setup-config.yaml | grep 'ramDisk:' | awk 'BEGIN {FS=":"}{print $2}') =~ "yes" ]]; then
+if grep -q 'ramDisk:.*yes' server-setup-config.yaml; then
     SAVE_DIR=$(cat server.properties | grep 'level-name' | awk 'BEGIN {FS="="}{print $2}')
     mv $SAVE_DIR "${SAVE_DIR}_backup"
     mkdir $SAVE_DIR
@@ -29,7 +29,7 @@ else
 fi
 
 java -jar $STARTER_JAR
-if [[ $DO_RAMDISK -eq 1 ]]; then
+if [ $DO_RAMDISK -eq 1 ]; then
     sudo umount $SAVE_DIR
     rm -rf $SAVE_DIR
     mv "${SAVE_DIR}_backup" $SAVE_DIR
