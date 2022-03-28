@@ -7,27 +7,28 @@ if [[ $(cat server-setup-config.yaml | grep 'ramDisk:' | awk 'BEGIN {FS=":"}{pri
     DO_RAMDISK=1
 fi
 
-if [ -f serverstarter-2.1.1.jar ]; then
-    echo "Skipping download. Using existing serverstarter-2.1.1.jar"
+STARTER_JAR="serverstarter-2.1.1.jar"
+URL="https://github.com/TeamAOF/ServerStarter/releases/download/v2.1.1/$STARTER_JAR"
+if [ -f $STARTER_JAR ]; then
+    echo "Skipping download. Using existing $STARTER_JAR"
 else
-    export URL="https://github.com/TeamAOF/ServerStarter/releases/download/v2.1.1/serverstarter-2.1.1.jar"
     echo $URL
     which wget >> /dev/null
     if [ $? -eq 0 ]; then
         echo "DEBUG: (wget) Downloading ${URL}"
-        wget -O serverstarter-2.1.1.jar "${URL}"
+        wget -O $STARTER_JAR "${URL}"
     else
         which curl >> /dev/null
         if [ $? -eq 0 ]; then
             echo "DEBUG: (curl) Downloading ${URL}"
-            curl -L -o serverstarter-2.1.1.jar "${URL}"
+            curl -L -o $STARTER_JAR "${URL}"
         else
             echo "Neither wget or curl were found on your system. Please install one and try again"
         fi
     fi
 fi
 
-java -jar serverstarter-2.1.1.jar
+java -jar $STARTER_JAR
 if [[ $DO_RAMDISK -eq 1 ]]; then
     sudo umount $SAVE_DIR
     rm -rf $SAVE_DIR
