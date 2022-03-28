@@ -9,30 +9,24 @@ fi
 
 if [ -f serverstarter-2.1.1.jar ]; then
     echo "Skipping download. Using existing serverstarter-2.1.1.jar"
-    java -jar serverstarter-2.1.1.jar
-    if [[ $DO_RAMDISK -eq 1 ]]; then
-        sudo umount $SAVE_DIR
-        rm -rf $SAVE_DIR
-        mv "${SAVE_DIR}_backup" $SAVE_DIR
-    fi
-    exit 0
 else
     export URL="https://github.com/TeamAOF/ServerStarter/releases/download/v2.1.1/serverstarter-2.1.1.jar"
-fi
-echo $URL
-which wget >> /dev/null
-if [ $? -eq 0 ]; then
-    echo "DEBUG: (wget) Downloading ${URL}"
-    wget -O serverstarter-2.1.1.jar "${URL}"
-else
-    which curl >> /dev/null
+    echo $URL
+    which wget >> /dev/null
     if [ $? -eq 0 ]; then
-        echo "DEBUG: (curl) Downloading ${URL}"
-        curl -L -o serverstarter-2.1.1.jar "${URL}"
+        echo "DEBUG: (wget) Downloading ${URL}"
+        wget -O serverstarter-2.1.1.jar "${URL}"
     else
-        echo "Neither wget or curl were found on your system. Please install one and try again"
+        which curl >> /dev/null
+        if [ $? -eq 0 ]; then
+            echo "DEBUG: (curl) Downloading ${URL}"
+            curl -L -o serverstarter-2.1.1.jar "${URL}"
+        else
+            echo "Neither wget or curl were found on your system. Please install one and try again"
+        fi
     fi
 fi
+
 java -jar serverstarter-2.1.1.jar
 if [[ $DO_RAMDISK -eq 1 ]]; then
     sudo umount $SAVE_DIR
