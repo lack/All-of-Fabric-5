@@ -1,9 +1,10 @@
+#!/bin/sh
 DO_RAMDISK=0
 if grep -q 'ramDisk:.*yes' server-setup-config.yaml; then
     SAVE_DIR=$(cat server.properties | grep 'level-name' | awk 'BEGIN {FS="="}{print $2}')
-    mv $SAVE_DIR "${SAVE_DIR}_backup"
-    mkdir $SAVE_DIR
-    sudo mount -t tmpfs -o size=2G tmpfs $SAVE_DIR
+    mv "$SAVE_DIR" "${SAVE_DIR}_backup"
+    mkdir "$SAVE_DIR"
+    sudo mount -t tmpfs -o size=2G tmpfs "$SAVE_DIR"
     DO_RAMDISK=1
 fi
 
@@ -30,7 +31,7 @@ fi
 
 java -jar $STARTER_JAR
 if [ $DO_RAMDISK -eq 1 ]; then
-    sudo umount $SAVE_DIR
-    rm -rf $SAVE_DIR
-    mv "${SAVE_DIR}_backup" $SAVE_DIR
+    sudo umount "$SAVE_DIR"
+    rm -rf "$SAVE_DIR"
+    mv "${SAVE_DIR}_backup" "$SAVE_DIR"
 fi
